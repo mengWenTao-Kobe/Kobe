@@ -1,0 +1,57 @@
+create table `users` (
+  id int PRIMARY key auto_increment,
+  ctime timestamp default current_timestamp,
+  account varchar(50), 
+  password varchar(32),
+  userGroup varchar(30),
+  imgUrl text
+);
+
+
+
+create table `shop` (
+  `id` int PRIMARY key auto_increment,
+	`shopname` varchar(50),
+	`address` text,
+	`phone` text,
+	`shopdesc` text,
+	`slogan` text,
+	`category` text,
+	`feature` text,
+	`packingexpense` text,
+	`minprice` int,
+  	`date` text,
+	`shopAvatar` text,
+	`businessLicenseImg` text,
+	`cateringServiceLicenseImg` text,
+	`tableData` text
+);
+
+
+create table `order` (
+  id int primary key auto_increment,
+  orderNo text,
+  orderTime timestamp,
+  phone text,
+  consignee VARCHAR(50),
+  deliverAddress text,
+ 	deliveryTime timestamp,
+	remarks text,
+ 	orderAmount float(10, 2),
+	orderState varchar(10)
+);
+
+
+
+create table `goods` (
+	id int PRIMARY KEY auto_increment,
+  `ctime` timestamp default current_timestamp,
+  goodsname varchar(100),
+  goodscategory varchar(100),
+  goodsfeature text,
+  imgUrl text,
+  isPromotion varchar(10),
+  standard text,
+	goodsdesc text
+)
+
