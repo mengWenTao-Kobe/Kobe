@@ -1,0 +1,69 @@
+空电脑怎么迅速搭建vue环境？？
+安装电脑软件环境
+	1. chrome，FF
+	2. nodejs(npm)
+	3. 编译器vs code (atom，sublime, HB)
+	4. 版本控制svn | git
+	5. 常用辅助工具 postman， ps， pxcock
+
+	（把以上所有软件放到一个u盘或者硬盘里整理好）
+	第一天上班切记不要问别人（同事）要安装包
+
+搭建项目环境
+	1. 安装yarn（非常fashion的包管理工具）
+		1.1 下载安装
+			npm i yarn -g
+		1.2 系统环境变量配置
+			cmd： yarn global bin 查看系统目录
+			把系统目录复制粘贴到我的电脑->环境变量->系统环境变量path中
+
+			常用指令： npm i xxx === yarn add xxx   全局安装： npm i xxx -g  === yarn global add xxxx
+				   npm init  === yarn init 
+	
+	2. 安装vue项目脚手架 1.x 2.x vue-cli 后来版本升级3以后换名 3.x 4.x @vue/cli
+		2.1 安装脚手架
+			yarn global add @vue/cli
+		2.2 使用脚手架创建项目
+			vue create xxx || vue ui
+			按需选择自己要安装的模块
+		2.3 启动项目
+			cd 项目  &&   yarn serve
+
+
+	3. 清理项目，删除多余项目，新建企业级目录
+		api  -- 请求封装
+		assets   -- 静态资源
+			styles  -- 公共样式
+			imgs    -- 图片
+			fonts   -- 字体
+	        components -- 公共组件
+		router  -- 路由文件夹
+		json    -- json数据文件
+		views||pages    -- 页面（视图组件）
+		utils  -- 公共函数（公用方法，比如转时间格式等到处都会用到就存放此）
+		App.vue  -- 入口加载的组件
+		main.js  -- 整个程序的入口js文件
+	(webpack工作原理： 当运行build打包时，会使用webpack从main.js找各种依赖
+	通过各种loader的转意，打包输出为浏览器可识别的文件)
+	
+	4. 安装对应UI框架
+		4.1 下载安装
+			yarn add view-design -D
+
+		4.2 引入UI框架
+			import ViewUI from 'view-design'	
+			import 'view-design/dist/styles/iview.css'
+
+			//全局注册ViewUI内的所有组件，让所有组件都可以直接使用此UI框架的组件
+			Vue.use(ViewUI)
+		4.3 使用
+			<组件名></组件名>
+
+	5. 其他小插件（当然你也可以用到时候在装，没有顺序）
+
+	6. 整理页面关系，把页面都创建出来，配置路由（理清页面层级关系）
+
+	7. 搭建配置页面路由（router配置）
+
+
+			
