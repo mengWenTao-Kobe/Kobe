@@ -57,10 +57,9 @@
           <el-table-column prop="remarks" label="用户备注" width="120"></el-table-column>
           <el-table-column prop="orderAmount" label="订单金额" width="100"></el-table-column>
           <el-table-column prop="orderState" label="订单状态" width="100"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
+          <el-table-column fixed="right" label="操作" width="80">
             <template slot-scope="scope">
               <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-              <el-button type="text" size="small">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -86,6 +85,7 @@
 import { getOrderList } from "@/api/order";
 // 引入moment
 import moment from "moment";
+import session from "@/utils/session"
 
 export default {
   async created() {
@@ -124,6 +124,7 @@ export default {
   methods: {
     // 查询
     onSubmit() {
+      this.currentPage=1;
       this.render();
     },
     // 重置
@@ -138,7 +139,12 @@ export default {
       this.render();
     },
     handleClick(row) {
-      console.log(row);
+      // 把这行的数据存到session
+      session.set("orderRow",row.id)
+      this.$router.push({
+        name:"order-detail",  //params传参必须通过name跳转
+        query:{id:row.id}  //要传递的参数
+      })
     },
     // 每页条数改变
     handleSizeChange(pageSize) {
@@ -174,4 +180,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="nav">
     <el-menu
-      :default-active="$route.path"
+      :default-active="activeIndex"
       class="el-menu-vertical"
       @open="handleOpen"
       @close="handleClose"
@@ -73,6 +73,15 @@ export default {
     handleOpen(key, keyPath) {
     },
     handleClose(key, keyPath) {
+    }
+  },
+  computed:{
+    activeIndex(){
+      if(this.$route.path.includes('/home/order')){
+        return '/home/order'
+      }else{
+        return this.$route.path
+      }
     }
   }
 };

@@ -7,3 +7,5 @@ import req from '@/utils/request'
 
 // 获取订单列表（含查询）
 export let getOrderList = params => req.get('/order/orderlist', params)
+// 获取订单详情
+export let getOrderDetail = params => req.get('/order/orderdetail', params)

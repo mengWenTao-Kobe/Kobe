@@ -51,6 +51,16 @@ const routes = [
           role:['super','normal']
         }
       },
+      // 订单详情
+      {
+        path: '/home/orderdetail',
+        name:'order-detail',
+        component: () => import('../views/Home/Orderdetail.vue'),
+        meta:{
+          bread:[{to:'/home/order',title:'订单管理'},{to:'/home/orderdetail',title:'订单详情'}],
+          role:['super','normal']
+        }
+      },
       // 商品管理
       {
         path: '/home/goods',
