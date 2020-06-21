@@ -11,6 +11,9 @@ export let shopInfo = params => Ajax.get('/shop/shopinfo', params)
 // 店铺内容修改
 export let shopEdit = params => Ajax.post('/shop/shopedit', params)
 
+// 店铺图片上传
+export let pictureUpload = params => Ajax.post('/shop/upload', params)
+
 
 
 

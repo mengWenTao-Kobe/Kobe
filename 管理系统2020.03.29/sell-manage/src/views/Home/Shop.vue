@@ -95,33 +95,43 @@
           <!-- 12.店铺头像 -->
           <el-form-item label="店铺头像" prop="shopAvatar">
             <el-upload
-              class="avatar-uploader"
               action="http://localhost:5000/shop/upload"
-              :show-file-list="false"
-              :on-success="shopAvatarSuccess"
+              list-type="picture-card"
+              :limit="1"
+              :file-list="fileList_DPTX"
               :before-upload="beforeAvatarUpload"
+              :on-preview="DPTX_Preview"
+              :on-remove="DPTX_Remove"
+              :on-success="DPTX_Success"
             >
-              <img v-if="ruleForm.shopAvatar" :src="imgServeUrl+ruleForm.shopAvatar" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i class="el-icon-plus"></i>
             </el-upload>
+            <el-dialog :visible.sync="DPTX_Visible">
+              <img width="100%" :src="DPTX_dialogImageUrl" alt />
+            </el-dialog>
           </el-form-item>
+
           <!-- 13.营业执照 -->
           <el-form-item label="营业执照" prop="businessLicenseImg">
+            <!-- 上传组件 -->
             <el-upload
-              class="avatar-uploader"
               action="http://localhost:5000/shop/upload"
-              :show-file-list="false"
-              :on-success="businessLicenseImgSuccess"
+              list-type="picture-card"
+              :file-list="fileList_YYZZ"
+              multiple
+              :on-preview="xxxPreview"
+              :on-remove="xxxRemove"
+              :on-success="xxxSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img
-                v-if="ruleForm.businessLicenseImg"
-                :src="imgServeUrl+ruleForm.businessLicenseImg"
-                class="avatar"
-              />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i class="el-icon-plus"></i>
             </el-upload>
+            <!-- 预览图片的模态框 -->
+            <el-dialog :visible.sync="dialogVisible_YYZZ">
+              <img width="100%" :src="dialogImageUrl_YYZZ" alt />
+            </el-dialog>
           </el-form-item>
+
           <!-- 14.餐饮服务许可证 -->
           <el-form-item label="餐饮服务许可证" prop="cateringServiceLicenseImg">
             <el-upload
@@ -156,7 +166,7 @@
 
 <script>
 // 引入请求函数
-import { shopInfo, shopEdit } from "@/api/shop";
+import { shopInfo, shopEdit, pictureUpload } from "@/api/shop";
 import moment from "moment";
 
 export default {
@@ -181,11 +191,22 @@ export default {
         minprice: "", //10.起送价格
         date: [], //11.营业时间
         shopAvatar: "", //12.店铺头像
-        businessLicenseImg: "", //13.营业执照
+        businessLicenseImg: [], //13.营业执照
         cateringServiceLicenseImg: "", //14.餐饮服务许可证
         tableData: "" //15.优惠信息
       },
       isDisabled: true,
+
+      // 图片相关维护数据
+      // 营业执照
+      dialogVisible_YYZZ: false,
+      dialogImageUrl_YYZZ: "",
+      fileList_YYZZ: [],
+      // 店铺头像
+      DPTX_Visible: false,
+      DPTX_dialogImageUrl: "",
+      fileList_DPTX: [],
+
       // 验证规格
       rules: {
         shopname: { required: true, message: "必填字段", trigger: "blur" },
@@ -220,15 +241,29 @@ export default {
     };
   },
   methods: {
-    // 获取店铺详情函数
+    // 获取店铺详情数据并回填数据
     async getData() {
       let { data } = await shopInfo();
+      // 处理数据
       data.date = JSON.parse(data.date);
       data.feature = JSON.parse(data.feature);
+      data.businessLicenseImg = JSON.parse(data.businessLicenseImg);
+      this.fileList_DPTX = [{
+        name:data.shopAvatar,
+        url:this.imgServeUrl+data.shopAvatar
+      }]
+      this.fileList_YYZZ = data.businessLicenseImg.map(v => {
+        return {
+          name: v,
+          url: this.imgServeUrl + v
+        };
+      });
+      //回填数据
       this.ruleForm = data;
     },
     handleChange() {},
-    // 图片上传前
+
+    // 店铺头像相关钩子
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -240,27 +275,47 @@ export default {
       }
       return isJPG && isLt2M;
     },
-    // 上传成功时
-    shopAvatarSuccess(res, file) {
-      let { code, msg, imgUrl } = res;
-      if (code === 0) {
-        this.$message({
-          type: "success",
-          message: msg
-        });
-        this.ruleForm.shopAvatar = imgUrl;
-      }
+    DPTX_Preview(file) {
+      this.DPTX_dialogImageUrl = file.url; //本地地址回填
+      this.DPTX_Visible = true; //让放图片的模态框显示
+      console.log(this.ruleForm.shopAvatar)
     },
-    businessLicenseImgSuccess(res, file) {
-      let { code, msg, imgUrl } = res;
-      if (code === 0) {
-        this.$message({
-          type: "success",
-          message: msg
-        });
-        this.ruleForm.businessLicenseImg = imgUrl;
-      }
+    DPTX_Remove(file, fileList) {
+      this.ruleForm.shopAvatar=''
+      console.log(this.ruleForm.shopAvatar)
     },
+    DPTX_Success(res, file, fileList) {
+      this.ruleForm.shopAvatar=res.imgUrl
+      console.log(this.ruleForm.shopAvatar)
+    },
+
+    // 营业执照相关函数
+    xxxPreview(file) {
+      this.dialogImageUrl_YYZZ = file.url; //加载图片
+      this.dialogVisible_YYZZ = true; //让放图片的模态框显示
+    },
+    xxxRemove(file, fileList) {
+      this.ruleForm.businessLicenseImg = fileList.map(v => {
+        if (v.response) {
+          return v.response.imgUrl;
+        } else {
+          return v.name;
+        }
+      });
+      console.log(this.ruleForm.businessLicenseImg);
+    },
+    xxxSuccess(res, file, fileList) {
+      this.ruleForm.businessLicenseImg = fileList.map(v => {
+        if (v.response) {
+          return v.response.imgUrl;
+        } else {
+          return v.name;
+        }
+      });
+      console.log(this.ruleForm.businessLicenseImg);
+    },
+
+    // 餐饮服务许可证相关钩子
     cateringServiceLicenseImgSuccess(res, file) {
       let { code, msg, imgUrl } = res;
       if (code === 0) {
@@ -271,6 +326,7 @@ export default {
         this.ruleForm.cateringServiceLicenseImg = imgUrl;
       }
     },
+
     // 提交表单
     submitForm(formName) {
       // delete this.ruleForm.id;
@@ -288,7 +344,6 @@ export default {
             this.isDisabled = true;
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
